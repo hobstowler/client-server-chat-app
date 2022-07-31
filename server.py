@@ -14,13 +14,14 @@ import socket
 # https://canvas.oregonstate.edu/courses/1878268/assignments/8929461?module_item_id=22337858
 # on 6/22/2022
 
-CONN = ('127.0.0.1', 8503)
-
 
 class Server:
     _conn_ask = False
     _host = '127.0.0.1'
-    _port = 9507
+    _port = 9508
+    _game_mode = False
+    _client_handle = 'SERVER >>'
+    _server_handle = 'CLIENT >>'
 
     def __init__(self):
         pass
@@ -47,21 +48,37 @@ class Server:
         while True:
             conn, addr = serv_socket.accept()
             message = conn.recv(4096).decode()
-            print('Client >>', message)
-            reply = 'Connection established. Say Hi!'
+            print(self._client_handle, message)
+            reply = 'Would you like to play a game? (yes/no)'
             conn.send(reply.encode())
-            print('Server >>', reply)
+            print(self._server_handle, reply)
 
-            while message != 'quit':
+            message = conn.recv(4096).decode()
+            print(self._client_handle, message)
+            if message == 'yes':
+                self._game_mode = True
+                reply = 'Alright, let\'s play!'
+                conn.send(reply.encode())
+                print(self._server_handle, reply)
+            else:
+                reply = 'Ok, maybe next time...'
+                conn.send(reply.encode())
+                print(self._server_handle, reply)
+
+            while message != '/q':
                 message = conn.recv(4096).decode()
                 print('Client >>', message)
-                reply = input()
-                conn.send(reply.encode())
-                print('Server >>', reply)
+                if self._game_mode:
+                    pass
+                else:
+                    if message == '/q':
+                        reply = 'Goodbye!'
+                        conn.send(reply.encode())
+                        print(self._server_handle, reply)
+                    else:
+                        reply = input(self._server_handle + ' ')
+                        conn.send(reply.encode())
 
-            reply = 'Goodbye'
-            conn.send(reply)
-            print('Server >>', reply)
             serv_socket.close()
             break
 
