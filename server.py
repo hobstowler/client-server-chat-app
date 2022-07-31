@@ -134,7 +134,7 @@ class Server:
         elif guess_score >= 3:
             answer += f' Keep going, you\'ll get there.'
         remaining = self._guesses - self._num_guesses
-        guesses = f' {remaining} guess{"es" if self._num_guesses > 1 else ""} left'
+        guesses = f' {remaining} guess{"es" if remaining > 1 else ""} left'
         answer += guesses
 
         return answer
