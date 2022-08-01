@@ -81,7 +81,7 @@ class Server:
             print(self._server_handle, reply)
 
             # main reply loop
-            while message != '/q':
+            while message != '/q' and reply != '/q':
                 message = conn.recv(4096).decode()
                 print(self._client_handle, message)
 

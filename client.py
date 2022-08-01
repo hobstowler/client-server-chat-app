@@ -38,11 +38,14 @@ class Client:
         print(self._server_handle, serv_res)
 
         # loop while we're not trying to quit
-        while message != '/q':
+        while message != '/q' and serv_res != '/q':
             message = input(self._client_handle + ' ')
             client_socket.send(message.encode())
             serv_res = client_socket.recv(4096).decode()
-            print(self._server_handle, serv_res)
+            if serv_res == '/q':
+                print('The server has closed the connection.')
+            else:
+                print(self._server_handle, serv_res)
 
 
 if __name__ == '__main__':
